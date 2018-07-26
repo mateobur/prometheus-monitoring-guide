@@ -1,0 +1,12 @@
+groups:
+- name: example
+  rules:
+  - alert: DeadMansSwitch
+    annotations:
+      description: This is a DeadMansSwitch meant to ensure that the entire Alerting
+        pipeline is functional.
+      summary: Alerting DeadMansSwitch
+    expr: vector(1)
+    labels:
+      severity: none
+

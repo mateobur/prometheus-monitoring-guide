@@ -1,0 +1,18 @@
+global:
+  scrape_interval:     15s
+  external_labels:
+    monitor: 'sysdig-prometheus'
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:9090']
+rule_files:
+  - /etc/prometheus/rules/*.yaml 
+alerting:
+  alertmanagers:
+  - scheme: http
+    static_configs:
+    - targets:
+       - "alertmanager-service:9093"
+
