@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: prometheus-deployment
+  labels:
+    app: prometheus
+    purpose: example
+spec:
+  serviceName: prometheus
+  replicas: 2
+  selector:
+    matchLabels:
+      app: prometheus
+      purpose: example
+  volumeClaimTemplates:
+  - metadata:
+      name: prometheus-metrics-db
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 50Gi
+  template:
+    metadata:
+      labels:
+        app: prometheus
+        purpose: example
+    spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 2000
+        runAsNonRoot: true
+      containers:
+      - args:
+        - --storage.tsdb.path=/data
+        - --storage.tsdb.retention=400d
+        - --config.file=/etc/prometheus/prometheus.yml
+        name: prometheus-example
+        image: prom/prometheus
+        volumeMounts:
+          - name: config-volume
+            mountPath: /etc/prometheus/prometheus.yml
+            subPath: prometheus.yml
+          - name: rules-general
+            mountPath: /etc/prometheus/rules/generalrules.yaml
+            subPath: generalrules.yaml
+          - name: prometheus-metrics-db
+            mountPath: /data
+        ports:
+        - containerPort: 9090
+      volumes:
+        - name: config-volume
+          configMap:
+           name: prometheus-example-cm
+        - name: rules-general
+          configMap:
+           name: prometheus-rules-general
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: prometheus-example-service
+spec:
+  selector:
+    app: prometheus
+    purpose: example
+  ports:
+  - name: promui
+    protocol: TCP
+    port: 9090
+    targetPort: 9090
