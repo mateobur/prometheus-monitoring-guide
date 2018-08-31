@@ -10,7 +10,7 @@ spec:
   groups:
   - name: general.rules
     rules:
-    - alert: TargetDown
+    - alert: TargetDown-serviceprom
       annotations:
         description: '{{ $value }}% of {{ $labels.job }} targets are down.'
         summary: Targets are down
@@ -18,7 +18,7 @@ spec:
       for: 10m
       labels:
         severity: warning
-    - alert: DeadMansSwitch
+    - alert: DeadMansSwitch-serviceprom
       annotations:
         description: This is a DeadMansSwitch meant to ensure that the entire Alerting
           pipeline is functional.

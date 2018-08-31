@@ -9,7 +9,7 @@ metadata:
 spec:
   alerting:
     alertmanagers:
-    - name: alermanager-main
+    - name: alertmanager-main
       namespace: monitoring
       port: web
   baseImage: quay.io/prometheus/prometheus
